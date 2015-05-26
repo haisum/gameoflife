@@ -7,16 +7,16 @@ import (
 func main() {
 	active := make([]gameoflife.Point, 3)
 	active[0] = gameoflife.Point{
-		1,
-		2,
+		6,
+		5,
 	}
 	active[1] = gameoflife.Point{
-		8,
-		7,
+		5,
+		5,
 	}
 	active[2] = gameoflife.Point{
-		0,
-		0,
+		7,
+		6,
 	}
-	gameoflife.Draw(50, 50, active)
+	gameoflife.Draw(10, 15, active)
 }

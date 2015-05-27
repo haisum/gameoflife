@@ -18,24 +18,33 @@ import (
 	"strings"
 )
 
-// bash ansi color that we are going to use for displaying dead cells
-var dead = ansi.ColorFunc("black+B:green")
-var alive = ansi.ColorFunc("177+b:18")
+type UI interface {
+	Draw()
+}
+
+type Terminal struct {
+	// bash ansi colors that we are going to use for displaying dead cells
+	Dead, Alive func(string) string
+}
 
 // This function draws a x X y grid on terminal
-// and highlights points at location defined by Point objects inside activePoints array
-func Draw(x int, y int, activePoints []Point) {
+// and highlights alive points in c, 2D map
+func (t *Terminal) Draw(x int, y int, c map[int]map[int]Point) {
+	if t.Alive == nil {
+		t.Alive = ansi.ColorFunc("177+b:18")
+	}
+	if t.Dead == nil {
+		t.Dead = ansi.ColorFunc("black+B:green")
+	}
 	fmt.Println(strings.Repeat(" -", x))
 	for j := 0; j < y; j++ {
 		for i := 0; i < x; i++ {
-			point := Point{i, j}
-
 			if i == 0 {
 				fmt.Print("|")
 			}
-
-			printCell(point.InSlice(activePoints))
-
+			//if i,j is present in c, cell is alive
+			_, alive := c[i][j]
+			printCell(alive)
 			fmt.Printf("|")
 			if i == x-1 {
 				fmt.Println()
@@ -47,7 +56,7 @@ func Draw(x int, y int, activePoints []Point) {
 }
 
 // Prints a cell of a grid on terminal
-func printCell(isAlive bool) {
+func (t *Terminal) printCell(isAlive bool) {
 	if runtime.GOOS == "windows" {
 		if isAlive {
 			fmt.Printf("O")
@@ -56,15 +65,15 @@ func printCell(isAlive bool) {
 		}
 	} else {
 		if isAlive {
-			fmt.Printf(alive(" "))
+			fmt.Printf(t.Alive(" "))
 		} else {
-			fmt.Printf(dead(" "))
+			fmt.Printf(t.Dead(" "))
 		}
 	}
 }
 
 // Clears current console
 // Equivalent to clscr or clear
-func Clear() {
+func (t *Terminal) Clear() {
 	fmt.Printf("\033[H\033[2J")
 }

@@ -5,10 +5,11 @@ import (
 	"github.com/haisum/gameoflife"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
-	active := "1:1,2:3,0:0"
+	active := "1:2,2:2,3:2"
 
 	cells := make(map[int]map[int]gameoflife.Point)
 
@@ -23,16 +24,21 @@ func main() {
 			cells[x][y] = 1
 		}
 	}
-	fmt.Printf(active)
 	fmt.Println()
 
 	g := gameoflife.Grid{
-		Rows:    10,
-		Columns: 10,
+		Rows:    5,
+		Columns: 5,
 		Alive:   cells,
 	}
 
 	ui := gameoflife.Terminal{}
 
 	g.Draw(ui)
+	for {
+		time.Sleep(time.Second / 2)
+		g.Next()
+		g.Draw(ui)
+	}
+
 }

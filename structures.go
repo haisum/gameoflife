@@ -16,9 +16,13 @@ func (g *Grid) totalNeighbors(x int, y int) int {
 	for j := -1; j <= 1; j++ {
 		//loop from position x-1 to x+1 to check neighbor rows
 		for i := -1; i <= 1; i++ {
-
-			if _, alive := g.Alive[i][j]; alive {
-				n += 1
+			nX := x + i
+			nY := y + j
+			//don't run out of bonds of life
+			if nX >= 0 && nY >= 0 && nY < g.Columns && nX < g.Rows && (i != 0 || j != 0) {
+				if _, alive := g.Alive[nX][nY]; alive {
+					n += 1
+				}
 			}
 		}
 	}
@@ -42,11 +46,15 @@ func (g *Grid) Next() {
 
 			//Any live cell with two or three live neighbours lives on to the next generation.
 			if isAlive && (n == 2 || n == 3) {
-				alive[x] = make(map[int]Point)
+				if _, ok := alive[x]; !ok {
+					alive[x] = make(map[int]Point)
+				}
 				alive[x][y] = 1
 			} else if !isAlive && n == 3 {
 				//Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-				alive[x] = make(map[int]Point)
+				if _, ok := alive[x]; !ok {
+					alive[x] = make(map[int]Point)
+				}
 				alive[x][y] = 1
 			}
 			//Any live cell with more than three live neighbours dies, as if by overcrowding

@@ -39,6 +39,8 @@ func (t Terminal) Draw(x int, y int, c map[int]map[int]Point) {
 	fmt.Println(strings.Repeat(" -", x))
 	for j := 0; j < y; j++ {
 		for i := 0; i < x; i++ {
+			//enabling this line while debugging helps
+			//fmt.Printf("{%d,%d}", i, j)
 			if i == 0 {
 				fmt.Print("|")
 			}

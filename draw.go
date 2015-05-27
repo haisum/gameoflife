@@ -19,7 +19,7 @@ import (
 )
 
 type UI interface {
-	Draw()
+	Draw(x int, y int, c map[int]map[int]Point)
 }
 
 type Terminal struct {
@@ -29,7 +29,7 @@ type Terminal struct {
 
 // This function draws a x X y grid on terminal
 // and highlights alive points in c, 2D map
-func (t *Terminal) Draw(x int, y int, c map[int]map[int]Point) {
+func (t Terminal) Draw(x int, y int, c map[int]map[int]Point) {
 	if t.Alive == nil {
 		t.Alive = ansi.ColorFunc("177+b:18")
 	}
@@ -44,7 +44,7 @@ func (t *Terminal) Draw(x int, y int, c map[int]map[int]Point) {
 			}
 			//if i,j is present in c, cell is alive
 			_, alive := c[i][j]
-			printCell(alive)
+			t.printCell(alive)
 			fmt.Printf("|")
 			if i == x-1 {
 				fmt.Println()

@@ -23,6 +23,16 @@ func main() {
 			cells[x][y] = 1
 		}
 	}
-	fmt.Printf("%v", cells)
-	gameoflife.Draw(10, 15, cells)
+	fmt.Printf(active)
+	fmt.Println()
+
+	g := gameoflife.Grid{
+		Rows:    10,
+		Columns: 10,
+		Alive:   cells,
+	}
+
+	ui := gameoflife.Terminal{}
+
+	g.Draw(ui)
 }

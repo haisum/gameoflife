@@ -7,8 +7,9 @@
 //
 // Usage
 //
-// Compile files in _simulator folder
-// Enjoy yourself smooth simulation
+// Compile files in _simulator folder. And run ./simulator. Some example commands:
+//   ./simulator -r 10 -c 10 -a "3:3,4:3,5:3,3:4,4:4,5:4,3:5,4:5,5:5"
+//   ./simulator -h
 package gameoflife
 
 import (

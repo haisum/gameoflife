@@ -28,30 +28,26 @@ func GetCells(s string) map[int]map[int]Point {
 	return cells
 }
 
-//JCell is representation of single Alive cell's position in json friendly format
-type JCell struct {
-	X, Y int
-}
-
 // This type is representation of Grid object in json friendly structure and is used in converting Grid oject to JSON
 type JGrid struct {
-	Rows, Columns int
-	Alive         []JCell
-	RefreshRate   time.Duration
+	Cells       [][]bool
+	RefreshRate time.Duration
 }
 
 func GridtoJGrid(g Grid) JGrid {
-	j := make([]JCell, 5)
-	for k1, _ := range g.Alive {
-		for k2, _ := range g.Alive[k1] {
-			o := JCell{X: k1, Y: k2}
-			j = append(j, o)
+	var j = make([][]bool, g.Rows)
+	for x := 0; x < g.Rows; x++ {
+		j[x] = make([]bool, g.Columns)
+		for y := 0; y < g.Columns; y++ {
+			if _, ok := g.Alive[x][y]; ok {
+				j[x][y] = true
+			} else {
+				j[x][y] = false
+			}
 		}
 	}
 	jg := JGrid{
-		Rows:        g.Rows,
-		Columns:     g.Columns,
-		Alive:       j,
+		Cells:       j,
 		RefreshRate: g.RefreshRate / time.Millisecond,
 	}
 	return jg

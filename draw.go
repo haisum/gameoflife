@@ -24,9 +24,9 @@
 package gameoflife
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/mgutz/ansi"
-	"json"
 	"log"
 	"net/http"
 	"strings"
@@ -106,6 +106,13 @@ type Http struct {
 func (h *Http) Draw(g Grid) {
 	if !h.serving {
 		http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+			data, err := json.Marshal(GridtoJGrid(g))
+			if err != nil {
+				fmt.Fprint(w, err)
+			} else {
+				fmt.Fprintf(w, "%s", data)
+			}
+			g.Next()
 
 		})
 		h.serve()

@@ -1,5 +1,9 @@
 package gameoflife
 
+import (
+	"time"
+)
+
 // Point struct represents a single alive cell at location x,y of the life grid
 type Point byte
 
@@ -7,6 +11,7 @@ type Point byte
 type Grid struct {
 	Rows, Columns int
 	Alive         map[int]map[int]Point
+	RefreshRate   time.Duration
 }
 
 //checks 3x3 matix around the given point and returns total number of alive neighbours of point
@@ -30,8 +35,8 @@ func (g *Grid) totalNeighbors(x int, y int) int {
 }
 
 // This function draws grid on UI
-func (g *Grid) Draw(u UI) {
-	u.Draw(g.Rows, g.Columns, g.Alive)
+func (g Grid) Draw(u UI) {
+	u.Draw(g)
 }
 
 // This function iterates through all cells of grid and sets alive cells for next generation of grid

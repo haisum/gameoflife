@@ -105,15 +105,16 @@ type Http struct {
 // Starts http server and draws simulation on http requests
 func (h *Http) Draw(g Grid) {
 	if !h.serving {
+		http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, req *http.Request) {})
 		http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 			data, err := json.Marshal(GridtoJGrid(g))
 			if err != nil {
 				fmt.Fprint(w, err)
 			} else {
+				fmt.Printf("Serving %s\n", data)
 				fmt.Fprintf(w, "%s", data)
 			}
 			g.Next()
-
 		})
 		h.serve()
 	}

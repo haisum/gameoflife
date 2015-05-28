@@ -26,6 +26,9 @@ package gameoflife
 import (
 	"fmt"
 	"github.com/mgutz/ansi"
+	"json"
+	"log"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -43,7 +46,7 @@ type Terminal struct {
 // This function draws a x X y grid on terminal
 // and highlights alive points in c, 2D map.
 // It also regenerates grid after "r" nanoseconds
-func (t Terminal) Draw(g Grid) {
+func (t *Terminal) Draw(g Grid) {
 	if !t.TextOnly {
 		if t.Alive == nil {
 			t.Alive = ansi.ColorFunc("177+b:18")
@@ -77,7 +80,7 @@ func (t Terminal) Draw(g Grid) {
 }
 
 // Prints a cell of a grid on terminal
-func (t *Terminal) printCell(isAlive bool) {
+func (t Terminal) printCell(isAlive bool) {
 	if t.TextOnly {
 		if isAlive {
 			fmt.Printf("O")
@@ -91,4 +94,35 @@ func (t *Terminal) printCell(isAlive bool) {
 			fmt.Printf(t.Dead(" "))
 		}
 	}
+}
+
+// This type defines UI Draw method for displaying simulation on http requests
+type Http struct {
+	serving bool
+	Port    int
+}
+
+// Starts http server and draws simulation on http requests
+func (h *Http) Draw(g Grid) {
+	if !h.serving {
+		http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+
+		})
+		h.serve()
+	}
+}
+
+// Starts the http server if server hasn't yet been started. This function will only be called on first call to Draw method
+func (h *Http) serve() {
+	fmt.Printf("\nListening on http://localhost:%d you can see simulation by opening this url in a browser.\n", h.Port)
+	h.serving = true
+	err := http.ListenAndServe(fmt.Sprintf(":%d", h.Port), nil)
+	if err != nil {
+		h.serving = false
+		log.Fatal(fmt.Sprintf("Could not start server on port %d. Error: ", h.Port), err)
+	}
+}
+
+func (h Http) printCell(isAlive bool) {
+
 }

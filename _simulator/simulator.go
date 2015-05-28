@@ -15,11 +15,20 @@ func main() {
 	var rows = flag.Int("x", 5, "Number of rows in life space")
 	var textOnly = flag.Bool("t", false, "If passed, text only output is shown without any colors. Useful for systems where ansi coloring is not supported and program outputs garbage text.")
 	var refreshRate = flag.Int64("r", 500, "Refresh rate for animation in milliseconds.")
+	var display = flag.String("d", "terminal", "Display interface for simulation. Two values are supported right now: \"terminal\" and \"http\"")
 	flag.Parse()
 
 	fmt.Println()
 
-	ui := gameoflife.Terminal{TextOnly: runtime.GOOS == "windows" || *textOnly}
+	var ui gameoflife.UI
+
+	//we need a reference to ui rather than value so we could re-use the object instead of copying it, hence & was used
+	switch *display {
+	case "http":
+		ui = &gameoflife.Http{}
+	default:
+		ui = &gameoflife.Terminal{TextOnly: runtime.GOOS == "windows" || *textOnly}
+	}
 
 	g := gameoflife.Grid{
 		Rows:        *rows,

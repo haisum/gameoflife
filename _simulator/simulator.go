@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/haisum/gameoflife"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -14,6 +15,7 @@ func main() {
 	var active = flag.String("a", "1:2,2:2,3:2", "List of alive cells. Format: x1:y1,x2:y2,x3:y3,....,xn:yn.")
 	var columns = flag.Int("c", 5, "Number of columns in life space")
 	var rows = flag.Int("r", 5, "Number of rows in life space")
+	var textOnly = flag.Bool("t", false, "If passed, text only output is shown without any colors. Useful for systems where ansi coloring is not supported and program outputs garbage text.")
 
 	flag.Parse()
 
@@ -40,7 +42,7 @@ func main() {
 		Alive:   cells,
 	}
 
-	ui := gameoflife.Terminal{}
+	ui := gameoflife.Terminal{TextOnly: runtime.GOOS == "windows" || *textOnly}
 
 	g.Draw(ui)
 	for {

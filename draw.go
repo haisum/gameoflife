@@ -15,12 +15,31 @@
 //
 // Usage
 //
-// Compile files in _simulator folder. And run ./simulator. Some example commands:
-// 	./simulator -x 10 -y 10 -a "3:3,4:3,5:3,3:4,4:4,5:4,3:5,4:5,5:5" -r 1000
+// Build binary
+//
+// 	cd src/github.com/haisum/gameoflife
+// 	go build _simulator/simulator.go
+//
+// Usage of ./simulator
+//
+// 	-a="1:2,2:2,3:2": List of alive cells. Format: x1:y1,x2:y2,x3:y3,....,xn:yn.
+//  -d="terminal": Display interface for simulation. Two values are supported right now: "terminal" and "http"
+//  -p=8001: Port number to listen on for http requests. Only applicable when -d is set to http
+//  -r=500: Refresh rate for animation in milliseconds.
+//  -t=false: Only applicable when -d is set to terminal. If passed, text only output is shown without any colors. Useful for systems where ansi coloring is not supported and program outputs garbage text.
+//  -x=5: Number of rows in life space
+//  -y=5: Number of columns in life space
+
+//
+// Example commands
+//
+// 	./simulator -x 9 -y 9 -a "3:3,4:3,5:3,3:4,4:4,5:4,3:5,4:5,5:5" -r 1000
 // 	./simulator -x 15 -y 10 -r 500
 // 	./simulator -h
+//	./simulator -d http
+//	./simulator -t
 //
-// 	Author: Haisum
+// Author: Haisum
 package gameoflife
 
 import (
@@ -130,8 +149,4 @@ func (h *Http) serve() {
 		h.serving = false
 		log.Fatal(fmt.Sprintf("Could not start server on port %d. Error: ", h.Port), err)
 	}
-}
-
-func (h Http) printCell(isAlive bool) {
-
 }
